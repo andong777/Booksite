@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>主页</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/mycss.css" rel="stylesheet">
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery-2.0.3.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.more').hide();
+           $('a').click(function(e){
+               idx = e.target.id;
+               $('#less'+idx).hide();
+               $('#more'+idx).show();
+           }) ;
+        });
+    </script>
+</head>
+<body>
+
+{% include 'includes/topbar.html' %}
+
+<div class="container">
+    <div class="page-header">
+        <h2>书评动态</h2>
+    </div>
+    {% for comment in comments %}
+    <div class="row-fluid">
+        <strong class="text-left">{{ comment.title }}</strong>
+        <small class="text-right text-warning">{{ comment.add_time }}</small>
+        <p class="alert alert-info" id="less{{ forloop.counter0 }}">{{ comment.content | truncatechars:'200'}}
+            <a id="{{ forloop.counter0 }}" href="#" class="text-error">更多...</a> </p>
+        <p class="alert alert-info more" id="more{{ forloop.counter0 }}">{{ comment.content }}</p>
+    </div>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

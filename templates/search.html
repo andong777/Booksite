@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>主页</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/mycss.css" rel="stylesheet">
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery-2.0.3.js"></script>
+
+</head>
+<body>
+
+{% include 'includes/topbar.html' %}
+
+<div class="container">
+    <div class="offset3" style="margin: auto auto">
+        <form action="" method="get">
+            <legend>搜索</legend>
+            <div class="input-append inline offset2">
+                <input type="text" name="q" class="input-xlarge" placeholder="书名、作者、出版社、ISBN">
+                <button class="btn" type="submit" id="submit"><i class="icon-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="page-header">
+        <h2>搜索结果</h2>
+    </div>
+    {% for book in books %}
+        <div class="row" style="margin: 20px">
+            <div style="float:left;margin-right: 10px">
+                <img src='media/{{ book.cover }}'>
+            </div>
+            <div>
+                <strong><a href="Book/{{ book.isbn }}">{{ book.name }}</a></strong>
+
+                <p>作者：{{ book.writer.name }}</p>
+
+                <p>出版社：{{ book.press.name }}</p>
+
+                <p>出版日期：{{ book.date }}</p>
+
+                <p class="text-error">得分：{{ book.score }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    {% if error %}
+    <div class="alert alert-error">
+        <p>无查询结果</p>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>

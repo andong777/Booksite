@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>主页</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/mycss.css" rel="stylesheet">
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery-2.0.3.js"></script>
+
+</head>
+<body>
+
+{% include 'includes/topbar.html' %}
+
+<div class="jumbotron masthead" style="margin-top: -20px">
+    <div class="container">
+        <h1>品书会</h1>
+
+        <p>分享你的阅读</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>新书速递</h1>
+    </div>
+    <ul class="wrap">
+        {% for book in new_books %}
+        <li class="item">
+            <div class="cover">
+                <img width="70px" height="100px" alt="{{ book.name | truncatechars:'10'}}" src="/media/{{ book.cover }}">
+            </div>
+            <div class="info">
+                <strong><a href="Book/{{ book.isbn }}">{{ book.name | truncatechars:'10'}}</a></strong>
+                <p>作者：{{ book.writer }}</p>
+                <p>出版社：{{ book.press }}</p>
+                <p>出版日期：{{ book.date.date }}</p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="page-header">
+        <h1>好书推荐</h1>
+    </div>
+    <ul class="wrap">
+        {% for book in good_books %}
+        <li class="item">
+            <div class="cover">
+                <img width="70px" height="100px" alt="{{ book.name | truncatechars:'10'}}" src="/media/{{ book.cover }}">
+            </div>
+            <div class="info">
+                <strong><a href="Book/{{ book.isbn }}">{{ book.name | truncatechars:'10'}}</a></strong>
+                <p>作者：{{ book.writer }}</p>
+                <p>出版社：{{ book.press }}</p>
+                <p>出版日期：{{ book.date.date }}</p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="page-header">
+        <h1>热门图书</h1>
+    </div>
+    <ul class="wrap">
+        {% for book in hot_books %}
+        <li class="item">
+            <div class="cover">
+                <img width="70px" height="100px" alt="{{ book.name | truncatechars:'10'}}" src="/media/{{ book.cover }}">
+            </div>
+            <div class="info">
+                <strong><a href="Book/{{ book.isbn }}">{{ book.name | truncatechars:'10'}}</a></strong>
+                <p>作者：{{ book.writer }}</p>
+                <p>出版社：{{ book.press }}</p>
+                <p>出版日期：{{ book.date.date }}</p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>

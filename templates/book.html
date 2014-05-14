@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ book.name }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/mycss.css" rel="stylesheet">
+    <link href="img/star-on.png" rel="">
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery-2.0.3.js"></script>
+    <script src="js/jquery.raty.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.more').hide();
+            $('a').click(function (e) {
+                idx = e.target.id;
+                $('#less' + idx).hide();
+                $('#more' + idx).show();
+            });
+
+            s0 = {{ book.score }};
+            $('#star').raty({
+                score: s0 / 2,
+                hints: ["很差", "差", "一般", "好", "很好"],
+                cancel: false,
+                half: true,
+                size: 16,
+                path: '/img/',
+                target: '#score',
+                targetkeep: true,
+                targetType: 'number',
+                click: function (score, evt) {
+                    s1 = score * 2;
+                    v = {{ book.vote }};
+                    res = (s0 * v + s1) / (v + 1) / 2;
+                    $(this).raty({
+                        readonly: true,
+                        score: res,
+                        cancel: false,
+                        half: true,
+                        size: 16,
+                        path: '/img/'
+                    })
+                    var options = {
+                        target: '#score', //后台将把传递过来的值赋给该元素
+                        url: '/updateScore/', //提交给哪个执行
+                        type: 'GET'
+                    };
+                    $('#score_form').ajaxSubmit(options);
+                }
+            });
+        });
+
+    </script>
+</head>
+<body>
+
+{% include 'includes/topbar.html' %}
+<form id="score_form">
+    <input type="hidden" id="score" name="score">
+    <input type="hidden" name="isbn" value="{{ book.isbn }}">
+</form>
+<div class="container">
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="row-fluid">
+                <div class="span3">
+                    <img src="/media/{{ book.cover }}" alt="{{ book.name }}" width="100px" height="140px">
+                </div>
+                <div class="span5">
+                    <strong>{{ book.name }}</strong>
+
+                    <p>作者：<a href="/Writer/{{ book.writer.id }}">{{ book.writer.name }}</a></p>
+
+                    <p>出版社：<a href="/Press/{{ book.press.id }}">{{ book.press.name }}</a></p>
+
+                    <p>出版日期：{{ book.date.date }}</p>
+
+                    <p>ISBN：{{ book.isbn }}</p>
+
+                    <div style="float:left">
+                        <span class="text-error">得分：</span>
+                    </div>
+                    <div id="star" style="float: left"></div>
+                </div>
+            </div>
+            <div>
+                <h3>内容简介</h3>
+                <hr>
+                <p>{{ book.intro }}</p>
+            </div>
+            <div>
+                <h3>评论</h3>
+                <hr>
+                {% for comment in book.comment_set.all %}
+                    <div class="row-fluid">
+                        <strong class="text-left">{{ comment.title }}</strong>
+                        <small class="text-right text-warning">{{ comment.add_time }}</small>
+                        <p class="alert alert-info"
+                           id="less{{ forloop.counter0 }}">{{ comment.content | truncatechars:'200' }}
+                            <a id="{{ forloop.counter0 }}" href="#" class="text-error">更多...</a></p>
+
+                        <p class="alert alert-info more" id="more{{ forloop.counter0 }}">{{ comment.content }}</p>
+                    </div>
+                {% endfor %}
+                {% if user and user.is_authenticated %}
+                    <h3>添加评论</h3><hr>
+                    <form action="" method="get"> {% csrf_token %}
+                        <div class="control-group">
+                            <label class="control-label" for="id_title">标题</label>
+                            <div class="controls">
+                                {{ form.title }}
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="id_content">内容</label>
+                            <div class="controls">
+                                {{ form.content }}
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button class="btn btn-warning" type="submit">提交评论</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="span4">
+            <section>
+                <h3>书籍标签</h3>
+                <ul class="inline">
+                    {% for tag in book.tag.all %}
+                        <li><a href="/Tag/{{ tag.name }}">{{ tag.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </section>
+            <section>
+                <h3>作者信息</h3>
+
+                <p>{{ book.writer.intro }}</p>
+            </section>
+            <section>
+                <h3>出版社信息</h3>
+
+                <p>{{ book.press.name }}</p>
+
+                <p><em>网址：</em><a href="{{ book.press.site }}">{{ book.press.site }}</a></p>
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+</html>sx

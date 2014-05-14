@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery-2.0.3.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.more').hide();
+            $('a').click(function (e) {
+                idx = e.target.id;
+                $('#less' + idx).hide();
+                $('#more' + idx).show();
+            });
+        });
+        function checkPassword() {
+            var p1 = $('#id_password').val();
+            var p2 = $('#id_re_password').val();
+            if (p1 != p2) {
+                alert("密码不一致！");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+
+<body>
+
+{% include 'includes/topbar.html' %}
+
+<div class="container">
+    <div class="row-fluid">
+        <div id="slider" class="span2">
+            <ul class="nav nav-list">
+                <li class="nav-header">操作</li>
+                <li><a href="#info">账户信息</a></li>
+                <li><a href="#password">修改密码</a></li>
+                <li><a href="#comment">我的书评</a></li>
+
+            </ul>
+        </div>
+
+        <div id="main" class="span10">
+            <section id="info" class="alert alert-info">
+                <h2>账户信息</h2>
+                <hr>
+                <dl>
+                    <dt>用户名：</dt>
+                    <dd>{{ user.username }}</dd>
+                    <dt>邮箱：</dt>
+                    <dd>{{ user.email }}</dd>
+                    <dt>注册时间：</dt>
+                    <dd>{{ user.date_joined }}</dd>
+                    <dt>上次登录时间：</dt>
+                    <dd>{{ user.last_login }}</dd>
+                </dl>
+            </section>
+            <section id="password" class="alert">
+                <h2>修改密码</h2>
+                <hr/>
+                {% if success %}
+                <p class="text-success">密码修改成功！</p>
+                {% endif %}
+                <form class="form-horizontal" action="" method="post"> {% csrf_token %}
+                    <div class="control-group">
+                        <label class="control-label" for="id_old_password">原密码</label>
+
+                        <div class="controls">
+                            {{ form.old_password }}
+                            {{ form.old_password.errors }}
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="id_password">新密码</label>
+
+                        <div class="controls">
+                            {{ form.password }}
+                            {{ form.password.errors }}
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="repeat">重复密码</label>
+
+                        <div class="controls">
+                            {{ form.re_password }}
+                            {{ form.re_password.errors }}
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-success btn-large" onclick="checkPassword()">确定
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section id="comment" class="alert alert-success">
+            <h2>我的书评</h2>
+            <hr/>
+                {% for comment in user.comment_set.all %}
+                    <div class="row" style="margin: 20px">
+                        <strong class="text-left">{{ comment.title }}</strong>
+                        <small class="text-right text-warning">{{ comment.add_time }}</small>
+                        <p class="alert alert-info"
+                           id="less{{ forloop.counter0 }}">{{ comment.content | truncatechars:'200' }}
+                            <a id="{{ forloop.counter0 }}" href="#" class="text-error">更多...</a></p>
+
+                        <p class="alert alert-info more" id="more{{ forloop.counter0 }}">{{ comment.content }}</p>
+                    </div>
+                {% endfor %}
+            </section>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ tag.name }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/mycss.css" rel="stylesheet">
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery-2.0.3.js"></script>
+</head>
+<body>
+
+{% include 'includes/topbar.html' %}
+
+<div class="container">
+    <div class="page-header">
+        <h1>{{ tag.name }}</h1>
+    </div>
+    <div class="alert alert-success">
+    <dl>
+        <dt>标签名：</dt>
+        <dd>{{ tag.name }}</dd>
+        <br>
+        <dt>介绍：</dt>
+        <dd>{{ tag.intro }}</dd>
+        <br>
+        <dt>添加时间：</dt>
+        <dd>{{ tag.add_time }}</dd>
+        <br>
+    </dl>
+    </div>
+    <h2>相关书籍</h2>
+    {% for book in tag.book_set.all %}
+    <div class="row" style="margin: 20px">
+        <div style="float:left;margin-right: 10px">
+            <img src="/media/{{ book.cover }}" alt="{{ book.name }}" width="100px" height="140px">
+        </div>
+        <div>
+            <strong><a href="Book/{{ book.isbn }}">{{ book.name }}</a></strong>
+            <p>作者：{{ book.writer.name }}</p>
+            <p>出版社：{{ book.press.name }}</p>
+            <p>出版日期：{{ book.date.date }}</p>
+            <p class="text-error">得分：{{ book.score }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>
